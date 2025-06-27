@@ -35,14 +35,6 @@ on:
         description: "Release Tag"
         default: 'use latest release'
         required: true
-      channel:
-        description: "Channel"
-        type: choice
-        options:
-          - fast
-          - regular
-        required: true
-        default: fast
 
 jobs:
   promote:
@@ -59,3 +51,26 @@ jobs:
           [ -z "${{ vars.IMAGE_REPO }}" ] && echo "IMAGE_REPO is required" && exit 1 
           [ -z "${{ vars.MODULE_MANIFESTS_REPO_NAME }}" ] && echo "MODULE_MANIFESTS_REPO_NAME is required" && exit 1 
           echo "Validated"
+
+      - name: Use default (latest) Release Tag
+        if: inputs.releaseTag == 'use latest release'
+        shell: bash
+        run: |
+          latest=$(curl -s -H "Accept: application/vnd.github+json" ${BTP_MANAGER_API_URL}/releases/latest | jq -r '.tag_name') 
+          echo "TAG=${latest}" >> $GITHUB_ENV
+          latest_release=$(gh release view --json tagName --jq '.tagName')
+          echo "Run using skr-tester with latest release tag: ${latest_release}"| tee $GITHUB_STEP_SUMMARY
+
+      - name: Validate given release tag
+        if: inputs.releaseTag != 'use latest release'
+        shell: bash
+        run: |
+          tags=$(curl -s -H "Accept: application/vnd.github+json" ${BTP_MANAGER_API_URL}/tags | jq -r '.[] | .name')
+          
+          if  echo $tags | tr " " '\n' | grep -F -q -x ${{ inputs.releaseTag }}; then
+              echo "TAG=${{ inputs.releaseTag }}" >> $GITHUB_ENV
+              echo "tag found"
+          else
+              echo "tag not found: ${{ inputs.releaseTag }}"
+              exit 1  
+          fi
