@@ -73,8 +73,28 @@ jobs:
           release_info=$(gh release view --repo $BTP_MANAGER_REPO ${{ inputs.releaseTag }})      
           if [ $? -eq 0 ]; then
               echo "TAG=${{ inputs.releaseTag }}" >> $GITHUB_ENV
-              echo "release tag found"
+              echo "Submitting module release tag: ${latest_release}"| tee $GITHUB_STEP_SUMMARY
           else
-              echo "release tag not found: ${{ inputs.releaseTag }}"
+              echo "Release tag not found: ${{ inputs.releaseTag }}" | tee $GITHUB_STEP_SUMMARY
               exit 1  
           fi
+      - name: Set branch name
+        run: echo "BRANCH_NAME=btp-manager-${TAG}-${{ inputs.channel }}" >> $GITHUB_ENV
+
+      - name: Setup git and clone repo
+        run: |
+          git config --global user.email ${{ vars.GIT_USER_EMAIL }}
+          git config --global user.name ${{ vars.GIT_USER_NAME }}
+          git clone ${MODULE_MANIFESTS_WITH_USER}
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
+
+      - name: Sync Repo and create branch
+        working-directory: module-manifests
+        run: |
+          git remote add upstream ${MODULE_MANIFESTS_WITH_USER}
+          git fetch upstream
+          git merge upstream/main
+          git checkout -B ${BRANCH_NAME}
+          mkdir -p modules/btp-operator/${{ inputs.channel }}
+          
