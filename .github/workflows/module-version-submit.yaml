@@ -19,6 +19,8 @@ env:
   BTP_MANAGER_API_URL: "https://api.github.com/repos/kyma-project/btp-manager"
   BTP_MANAGER_RELEASES_URL: "https://github.com/kyma-project/btp-manager/releases"
 
+  BTP_MANAGER_REPO: "kyma-project/btp-manager"
+
   # File names
   TEMPLATE_FILENAME: moduletemplate-btp-operator.yaml
   DEFAULT_CR_FILENAME: btp-operator-default-cr.yaml
@@ -28,7 +30,7 @@ env:
   # needed by gh cli for GitHub enterprise
   GH_ENTERPRISE_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
 
-
+  # needed by gh cli for local repo
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on:
@@ -59,10 +61,8 @@ jobs:
         if: inputs.releaseTag == 'use latest release'
         shell: bash
         run: |
-          latest=$(curl -s -H "Accept: application/vnd.github+json" ${BTP_MANAGER_API_URL}/releases/latest | jq -r '.tag_name') 
-          echo "TAG=${latest}" >> $GITHUB_ENV
-          echo "Using latest release tag: ${latest}" | tee $GITHUB_STEP_SUMMARY
-          latest_release=$(gh release view --repo kyma-project/btp-manager --json tagName --jq '.tagName')
+          latest_release=$(gh release view --repo $BTP_MANAGER_REPO --json tagName --jq '.tagName')
+          echo "TAG=${latest_release}" >> $GITHUB_ENV
           echo "Submitting module with latest release tag: ${latest_release}"| tee $GITHUB_STEP_SUMMARY
 
       - name: Validate given release tag
