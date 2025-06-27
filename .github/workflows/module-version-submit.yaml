@@ -56,7 +56,7 @@ jobs:
           echo "Validated"
 
       - run: |
-          gh version
+          gh release
 
       - name: Use default (latest) Release Tag
         if: inputs.releaseTag == 'use latest release'
@@ -64,7 +64,7 @@ jobs:
         run: |
           latest=$(curl -s -H "Accept: application/vnd.github+json" ${BTP_MANAGER_API_URL}/releases/latest | jq -r '.tag_name') 
           echo "TAG=${latest}" >> $GITHUB_ENV
-          latest_release=$(gh release view --json tagName --jq '.tagName')
+          latest_release=$(gh release view --repo kyma-project/btp-manager --json tagName --jq '.tagName')
           echo "Run using skr-tester with latest release tag: ${latest_release}"| tee $GITHUB_STEP_SUMMARY
 
       - name: Validate given release tag
