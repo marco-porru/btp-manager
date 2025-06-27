@@ -69,9 +69,9 @@ jobs:
         if: inputs.releaseTag != 'use latest release'
         shell: bash
         run: |
-          tags=$(curl -s -H "Accept: application/vnd.github+json" ${BTP_MANAGER_API_URL}/tags | jq -r '.[] | .name')
-          
-          if  echo $tags | tr " " '\n' | grep -F -q -x ${{ inputs.releaseTag }}; then
+          echo "Validating given release tag: ${{ inputs.releaseTag }}" | tee $GITHUB_STEP_SUMMARY
+          exists = 
+          if [ -n $(gh release view --repo $BTP_MANAGER_REPO ${{ inputs.releaseTag }} ) ]; then
               echo "TAG=${{ inputs.releaseTag }}" >> $GITHUB_ENV
               echo "tag found"
           else
