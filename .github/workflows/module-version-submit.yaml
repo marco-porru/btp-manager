@@ -70,8 +70,8 @@ jobs:
         shell: bash
         run: |
           echo "Validating given release tag: ${{ inputs.releaseTag }}" | tee $GITHUB_STEP_SUMMARY
-          exists = 
-          if [ -n $(gh release view --repo $BTP_MANAGER_REPO ${{ inputs.releaseTag }} ) ]; then
+          release_info=$(gh release view --repo $BTP_MANAGER_REPO --json tagName --jq '.tagName')      
+          if [ $? -eq 0 ]; then
               echo "TAG=${{ inputs.releaseTag }}" >> $GITHUB_ENV
               echo "tag found"
           else
