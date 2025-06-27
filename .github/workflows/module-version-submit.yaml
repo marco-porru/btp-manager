@@ -28,6 +28,9 @@ env:
   # needed by gh cli for GitHub enterprise
   GH_ENTERPRISE_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
 
+
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 on:
   workflow_dispatch:
     inputs:
@@ -54,8 +57,6 @@ jobs:
 
       - run: |
           gh version
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Use default (latest) Release Tag
         if: inputs.releaseTag == 'use latest release'
