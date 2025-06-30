@@ -88,6 +88,10 @@ jobs:
           else
             echo "File does not exist, creating it"
           fi
+          cat <<EOF | tee ${CHANNEL_MAPPING_FILENAME}
+          targetLandscapes:
+            - dev
+          EOF
 #                cat <<EOF > ${CHANNEL_MAPPING_FILENAME}
 #                yq -i ".modules.\"${{ vars.FULL_MODULE_NAME }}\".channels[\"${{ inputs.channel }}\"].version = \"${{ inputs.releaseTag }}\"" ${{ vars.CHANNEL_MAPPING_FILENAME }}
 #          else
