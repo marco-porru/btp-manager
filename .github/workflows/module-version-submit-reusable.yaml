@@ -35,5 +35,5 @@ jobs:
     name: Nested submit version
     uses: "./.github/workflows/module-version-submit.yaml"
     with:
-      releaseTag: ${{ inputs.name }}
+      releaseTag: ${{ inputs.releaseTag }}
     secrets: inherit
