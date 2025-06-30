@@ -1,4 +1,4 @@
-name: Test version submit reusable
+name: Test version submit calling reusable
 #  Workflow requires following variables to be defined
 #     DOC_URL - location of btp-manager documentation
 #     GIT_USER_NAME - user creating head branch and PR
@@ -6,27 +6,6 @@ name: Test version submit reusable
 #     GH_TOOLS_HOST - tools host
 #     IMAGE_REPO - name of binary image of the btp-manager executable
 #     MODULE_MANIFESTS_REPO_NAME - repository of modules manifests
-
-env:
-
-  # DO NOT CHANGE THIS VALUE - the change will cause inconsistency on landscapes
-  # since there would be "old-named" and "new-named" modules and LM would switch between those infinitely
-  FULL_MODULE_NAME: kyma-project.io/module/btp-operator
-
-  # GitHub repositories
-  MODULE_MANIFESTS_WITH_USER:  "https://${{ vars.GIT_USER_NAME }}:${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}@${{ vars.GH_TOOLS_HOST }}/kyma/${{ vars.MODULE_MANIFESTS_REPO_NAME }}.git"
-
-  BTP_MANAGER_API_URL: "https://api.github.com/repos/kyma-project/btp-manager"
-  BTP_MANAGER_RELEASES_URL: "https://github.com/kyma-project/btp-manager/releases"
-
-  # File names
-  TEMPLATE_FILENAME: moduletemplate-btp-operator.yaml
-  DEFAULT_CR_FILENAME: btp-operator-default-cr.yaml
-  MANIFEST_FILENAME: btp-manager.yaml
-  SCAN_CONFIG_FILENAME: sec-scanners-config.yaml
-
-  # needed by gh cli for GitHub enterprise
-  GH_ENTERPRISE_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
 
 on:
   workflow_dispatch:
@@ -37,7 +16,7 @@ on:
         required: true
 
 jobs:
-  promote:
+  submit:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,3 +30,10 @@ jobs:
           [ -z "${{ vars.IMAGE_REPO }}" ] && echo "IMAGE_REPO is required" && exit 1 
           [ -z "${{ vars.MODULE_MANIFESTS_REPO_NAME }}" ] && echo "MODULE_MANIFESTS_REPO_NAME is required" && exit 1 
           echo "Validated"
+
+  submit-version-nested:
+    name: Nested submit version
+    uses: "./.github/workflows/module-version-submit.yaml"
+    with:
+      releaseTag: ${{ inputs.name }}
+    secrets: inherit

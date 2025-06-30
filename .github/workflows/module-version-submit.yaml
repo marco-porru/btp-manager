@@ -40,6 +40,12 @@ on:
         description: "Release Tag"
         default: 'use latest release'
         required: true
+  workflow_call:
+    inputs:
+      releaseTag:
+        description: "Release Tag"
+        required: true
+        type: string
 
 jobs:
   promote:
