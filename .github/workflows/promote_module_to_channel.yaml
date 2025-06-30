@@ -60,25 +60,25 @@ jobs:
           [ -z "${{ vars.MODULE_MANIFESTS_REPO_NAME }}" ] && echo "MODULE_MANIFESTS_REPO_NAME is required" && exit 1 
           echo "Validated"
 
-      - name: Set branch name
-        run: echo "BRANCH_NAME=btp-manager-${TAG}-${{ inputs.channel }}" >> $GITHUB_ENV
-
-      - name: Setup git and clone repo
-        run: |
-          git config --global user.email ${{ vars.GIT_USER_EMAIL }}
-          git config --global user.name ${{ vars.GIT_USER_NAME }}
-          git clone ${MODULE_MANIFESTS_WITH_USER}
-        env:
-          GH_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
-
-      - name: Sync Repo and create branch
-        working-directory: module-manifests
-        run: |
-          git remote add upstream ${MODULE_MANIFESTS_WITH_USER}
-          git fetch upstream
-          git merge upstream/main
-          git checkout -B ${BRANCH_NAME}
-
+#      - name: Set branch name
+#        run: echo "BRANCH_NAME=btp-manager-${TAG}-${{ inputs.channel }}" >> $GITHUB_ENV
+#
+#      - name: Setup git and clone repo
+#        run: |
+#          git config --global user.email ${{ vars.GIT_USER_EMAIL }}
+#          git config --global user.name ${{ vars.GIT_USER_NAME }}
+#          git clone ${MODULE_MANIFESTS_WITH_USER}
+#        env:
+#          GH_TOKEN: ${{ secrets.BOT_TOKEN_GITHUB_TOOLS }}
+#
+#      - name: Sync Repo and create branch
+#        working-directory: module-manifests
+#        run: |
+#          git remote add upstream ${MODULE_MANIFESTS_WITH_USER}
+#          git fetch upstream
+#          git merge upstream/main
+#          git checkout -B ${BRANCH_NAME}
+#
       - name: Modify channel mapping
         working-directory: module-manifests/modules/btp-operator
         run: |
