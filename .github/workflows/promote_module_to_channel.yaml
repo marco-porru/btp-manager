@@ -88,16 +88,17 @@ jobs:
 #                yq -i ".modules.\"${{ vars.FULL_MODULE_NAME }}\".channels[\"${{ inputs.channel }}\"].version = \"${{ inputs.releaseTag }}\"" ${{ vars.CHANNEL_MAPPING_FILENAME }}
           else
               echo "File does not exist, creating it"
-              cat <<EOF
-              targetLandscapes:
-               - dev
-              channels:
-               - channel: regular
-                 version: ${{ input.releaseTag }}
-               - channel: fast
-                 version: ${{ input.releaseTag }}
-              EOF               
+#              cat <<EOF
+#              targetLandscapes:
+#               - dev
+#              channels:
+#               - channel: regular
+#                 version: ${{ input.releaseTag }}
+#               - channel: fast
+#                 version: ${{ input.releaseTag }}
+#              EOF               
           fi
+          yq -V
 
       - name: Commit and push changes
         working-directory: module-manifests
