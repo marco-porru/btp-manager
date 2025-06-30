@@ -35,14 +35,6 @@ on:
         description: "Release Tag"
         default: 'use latest release'
         required: true
-      channel:
-        description: "Channel"
-        type: choice
-        options:
-          - fast
-          - regular
-        required: true
-        default: fast
 
 jobs:
   promote:
