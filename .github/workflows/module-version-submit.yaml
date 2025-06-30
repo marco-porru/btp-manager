@@ -152,7 +152,7 @@ jobs:
               echo "opened PR already exists, no need to create new one, PR will be updated by push from previous step"
               exit 0
           fi
-          gh pr create -B main -H ${{ vars.GIT_USER_NAME }}:${BRANCH_NAME} -R https://github.tools.sap/kyma/module-manifests/ --title "Submit BTP Manager version ${TAG}" --fill --body "${BTP_MANAGER_RELEASES_URL}/${TAG}"
+          gh pr create -B main -H ${{ vars.GIT_USER_NAME }}:${BRANCH_NAME} -R https://github.tools.sap/kyma/module-manifests/ --title "Submit BTP Manager version ${TAG}" --fill --body "${BTP_MANAGER_RELEASES_URL}/${TAG}" | tee $GITHUB_STEP_SUMMARY
 
           
           
