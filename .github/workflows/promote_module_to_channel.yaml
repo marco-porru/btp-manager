@@ -78,11 +78,11 @@ jobs:
           git fetch upstream
           git merge upstream/main
           git checkout -B ${BRANCH_NAME}
-#
-#      - name: Modify channel mapping
-#        working-directory: module-manifests/modules/btp-operator
-#        run: |
-#          echo "Updating channel mapping configuration file:"
+
+      - name: Modify channel mapping
+        working-directory: module-manifests/modules/btp-operator
+        run: |
+          echo "Updating channel mapping configuration file: ${CHANNEL_MAPPING_FILENAME}"
 #          if [ -f "${CHANNEL_MAPPING_FILENAME}" ]; then
 #              echo "File exists, updating it"
 ##                yq -i ".modules.\"${{ vars.FULL_MODULE_NAME }}\".channels[\"${{ inputs.channel }}\"].version = \"${{ inputs.releaseTag }}\"" ${{ vars.CHANNEL_MAPPING_FILENAME }}
@@ -96,7 +96,7 @@ jobs:
 #                 version: ${{ input.releaseTag }}
 #               - channel: fast
 #                 version: ${{ input.releaseTag }}
-#              EOF               
+#              EOF
 #          fi
 #          yq -V
 
