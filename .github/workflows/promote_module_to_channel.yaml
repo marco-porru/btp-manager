@@ -81,6 +81,8 @@ jobs:
 
       - name: Modify channel mapping
         working-directory: module-manifests/modules/btp-operator
+        env:
+          TAG: ${{ inputs.releaseTag }}
         run: |
           echo "Updating channel mapping configuration file: ${CHANNEL_MAPPING_FILENAME}"
           if [ -f "${CHANNEL_MAPPING_FILENAME}" ]; then
@@ -93,9 +95,9 @@ jobs:
             - dev
           channels:
            - channel: regular
-             version: ${{ input.releaseTag }}
+             version: ${TAG}
            - channel: fast
-             version: ${{ input.releaseTag }}
+             version: ${TAG}
           EOF
 #                cat <<EOF > ${CHANNEL_MAPPING_FILENAME}
 #                yq -i ".modules.\"${{ vars.FULL_MODULE_NAME }}\".channels[\"${{ inputs.channel }}\"].version = \"${{ inputs.releaseTag }}\"" ${{ vars.CHANNEL_MAPPING_FILENAME }}
