@@ -79,7 +79,7 @@ jobs:
               exit 1  
           fi
       - name: Set branch name
-        run: echo "BRANCH_NAME=btp-manager-${TAG}-${{ inputs.channel }}" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=btp-manager-${TAG}" >> $GITHUB_ENV
 
       - name: Setup git and clone repo
         run: |
@@ -99,11 +99,11 @@ jobs:
           mkdir -p modules/btp-operator/${TAG}
 
       - name: Create module configuration
-        working-directory: module-manifests/modules/btp-operator/${TAG}
+        working-directory: module-manifests/modules/btp-operator
         run: |
           echo "Creating module configuration file:"
 
-          cat <<EOF | tee module-config.yaml
+          cat <<EOF | tee ${TAG}/module-config.yaml
           name: ${FULL_MODULE_NAME}
           version: ${TAG}
           repository: https://github.com/kyma-project/btp-manager.git
