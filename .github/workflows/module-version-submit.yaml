@@ -114,7 +114,7 @@ jobs:
           manager:
             name: btp-manager-controller-manager
             namespace: kyma-system
-            groups: apps
+            group: apps
             version: v1
             kind: Deployment
           security: ${SCAN_CONFIG_FILENAME}
