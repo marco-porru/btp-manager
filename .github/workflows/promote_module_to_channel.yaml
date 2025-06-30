@@ -83,12 +83,12 @@ jobs:
         working-directory: module-manifests/modules/btp-operator
         run: |
           echo "Updating channel mapping configuration file:"
-          if [ -f "${{ vars.CHANNEL_MAPPING_FILENAME }}" ]; then
+          if [ -f "${CHANNEL_MAPPING_FILENAME}" ]; then
               echo "File exists, updating it"
 #                yq -i ".modules.\"${{ vars.FULL_MODULE_NAME }}\".channels[\"${{ inputs.channel }}\"].version = \"${{ inputs.releaseTag }}\"" ${{ vars.CHANNEL_MAPPING_FILENAME }}
           else
               echo "File does not exist, creating it"
-              cat <<EOF > ${CHANNEL_MAPPING_FILENAME}
+              cat <<EOF
               targetLandscapes:
                - dev
               channels:
