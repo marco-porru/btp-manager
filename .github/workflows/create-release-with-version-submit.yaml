@@ -361,3 +361,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: ./scripts/publish_release.sh ${{ needs.create-draft.outputs.release_id }}
+
+  submit-version:
+    needs: [publish-release]
+    name: Submit version
+    uses: "./.github/workflows/module-version-submit.yaml"
+    with:
+      releaseTag: ${{ inputs.name }}
+    secrets: inherit
