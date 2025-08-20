@@ -40,21 +40,22 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
+      - name: Create lightweight tag
+        run: |
+          git tag ${{ inputs.name }}
+          git push origin ${{ inputs.name }}
+
       - name: Create draft release
         id: create-draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_ID=$(./scripts/create_draft_release.sh ${{ github.event.inputs.name }})
-          echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
-
-      - name: Create lightweight tag
-        run: |
-          git tag ${{ github.event.inputs.name }}
-          git push origin ${{ github.event.inputs.name }}
-
-    outputs:
-      release_id: ${{ steps.create-draft.outputs.release_id }}
+          gh release create ${{ inputs.name }} \
+            --draft \
+            --title "${{ inputs.name }}" \
+            --generate-notes \
+            --verify-tag
+          
 
   publish-release:
     name: Publish release
@@ -71,4 +72,7 @@ jobs:
       - name: Publish release
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-        run: ./scripts/publish_release.sh ${{ needs.create-draft.outputs.release_id }}
+        run: |
+          gh release view ${{ inputs.name }} 
+          #gh release edit ${{ inputs.name }} --draft=false
+
